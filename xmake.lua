@@ -14,6 +14,7 @@ target("more-events") -- Change this to your plugin name.
     )
     add_defines(
         "_HAS_CXX23=1", -- To enable C++23 features
+        "MORE_EVENTS_EXPORTS", -- To export symbols in Windows.
         "NOMINMAX", -- To avoid conflicts with std::min and std::max.
         "UNICODE" -- To enable Unicode support in Windows API.
     )
@@ -21,6 +22,7 @@ target("more-events") -- Change this to your plugin name.
         "src/**.cpp"
     )
     add_includedirs(
+        "include",
         "src"
     )
     add_packages(

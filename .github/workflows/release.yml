@@ -41,7 +41,10 @@ jobs:
           path: release/
 
       - run: |
-          cp LICENSE README.md release/
+          cp -r include release/
+
+      - run: |
+          cp COPYING README.md release/
 
       - name: Archive release
         run: |
