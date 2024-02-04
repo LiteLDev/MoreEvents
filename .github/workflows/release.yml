@@ -46,7 +46,7 @@ jobs:
           cp -r include release/
 
       - run: |
-          cp COPYING README.md release/
+          cp COPYING COPYING.LESSER README.md release/
 
       - name: Archive release
         run: |
