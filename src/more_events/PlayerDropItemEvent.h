@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Macros.h"
 #include "ll/api/event/Event.h"
 
 #include <functional>
@@ -13,16 +12,16 @@ namespace more_events {
 
 class PlayerDropItemEvent : public ll::event::Cancellable<ll::event::PlayerEvent> {
 public:
-    PlayerDropItemEvent(Player& player, ItemStack& itemStack);
+    __declspec(dllexport) PlayerDropItemEvent(Player& player, ItemStack& itemStack);
 
     PlayerDropItemEvent(const PlayerDropItemEvent&)                    = delete;
     PlayerDropItemEvent(PlayerDropItemEvent&&)                         = delete;
     auto operator=(const PlayerDropItemEvent&) -> PlayerDropItemEvent& = delete;
     auto operator=(PlayerDropItemEvent&&) -> PlayerDropItemEvent&      = delete;
 
-    ~PlayerDropItemEvent() override = default;
+    __declspec(dllexport) ~PlayerDropItemEvent() override = default;
 
-    [[nodiscard]] MORE_EVENTS_API auto itemStack() const -> ItemStack&;
+    [[nodiscard]] __declspec(dllexport) auto itemStack() const -> ItemStack&;
 
 private:
     std::reference_wrapper<ItemStack> mItemStack;

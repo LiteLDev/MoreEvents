@@ -1,4 +1,4 @@
-#include "more_events/PlayerDropItemEvent.h"
+#include "PlayerDropItemEvent.h"
 
 #include "ll/api/event/EmitterBase.h"
 #include "ll/api/event/ListenerBase.h"
