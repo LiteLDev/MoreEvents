@@ -19,8 +19,8 @@
     "files": {
         "place": [
             {
-                "src": "plugin/*",
-                "dest": "plugins/"
+                "src": "more-events/*",
+                "dest": "plugins/more-events/"
             }
         ]
     }
