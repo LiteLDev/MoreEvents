@@ -22,7 +22,6 @@ target("more-events") -- Change this to your plugin name.
         "src/**.cpp"
     )
     add_includedirs(
-        "include",
         "src"
     )
     add_packages(
