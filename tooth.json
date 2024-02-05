@@ -1,0 +1,27 @@
+{
+    "format_version": 2,
+    "tooth": "github.com/LiteLDev/MoreEvents",
+    "version": "0.1.0",
+    "info": {
+        "name": "MoreEvents",
+        "description": "More events than LeviLamina",
+        "author": "LiteLDev",
+        "tags": [
+            "levilamina",
+            "library",
+            "plugin"
+        ]
+    },
+    "asset_url": "https://github.com/LiteLDev/MoreEvents/releases/download/v0.1.0/more-events-windows-x64.zip",
+    "prerequisites": {
+        "github.com/LiteLDev/LeviLamina": "0.6.x >=0.6.3"
+    },
+    "files": {
+        "place": [
+            {
+                "src": "plugin/*",
+                "dest": "plugins/"
+            }
+        ]
+    }
+}

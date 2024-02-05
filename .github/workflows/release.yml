@@ -10,7 +10,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: xmake-io/github-action-setup-xmake@v1
-      
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/AppData/Local/.xmake
+          key: xmake-${{ hashFiles('xmake.lua') }}
+          restore-keys: |
+            xmake-
+
       - run: |
           xmake repo -u
 
@@ -23,21 +31,45 @@ jobs:
       - run: |
           xmake package -v -y
 
-      - uses: actions/upload-artifact@v3
+      - run: |
+          cp CHANGELOG.md COPYING COPYING.LESSER README.md build/packages/m/more-events/windows/x64/release/
+
+      - run: |
+          cp -r bin/* build/packages/m/more-events/windows/x64/release/
+
+      - uses: actions/upload-artifact@v4
         with:
-          name: more-events-package-windows-x64-${{ github.sha }}
+          name: more-events-windows-x64-${{ github.sha }}
           path: |
             build/packages/m/more-events/windows/x64/release/
 
-      - uses: actions/upload-artifact@v3
+  update-release-notes:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate release stuff (tooth.json, CHANGELOG.md, etc.)
+        run: |
+          npm i -g keep-a-changelog
+          python scripts/validate_release.py --tag ${{ github.event.release.tag_name }}
+
+      - id: extract-release-notes
+        uses: ffurrer2/extract-release-notes@v1
+
+      - uses: softprops/action-gh-release@v1
         with:
-          name: more-events-plugin-windows-x64-${{ github.sha }}
-          path: |
-            bin/
+          body: |
+            ${{ steps.extract-release-notes.outputs.release_notes }}
+
+            | File | SHA256 |
+            | ---- | ------ |
 
   upload-to-release:
     needs:
       - build
+      - update-release-notes
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -46,32 +78,21 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: more-events-package-windows-x64-${{ github.sha }}
-          path: release/package/
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: more-events-plugin-windows-x64-${{ github.sha }}
-          path: release/plugin/
+          name: more-events-windows-x64-${{ github.sha }}
+          path: artifact
 
       - run: |
-          cp COPYING COPYING.LESSER README.md release/plugin/
+          zip -r ../more-events-windows-x64.zip *
+        working-directory: artifact
 
-      - run: |
-          zip -r ../../more-events-package-windows-x64.zip *
-        working-directory: release/package/
-
-      - run: |
-          zip -r ../../more-events-plugin-windows-x64.zip *
-        working-directory: release/plugin/
-
-      - id: extract-release-notes
-        uses: ffurrer2/extract-release-notes@v2
+      - id: calculate-sha256
+        run: |
+          echo sha256=$(sha256sum more-events-windows-x64.zip | awk '{print $1}') >> $GITHUB_OUTPUT
 
       - uses: softprops/action-gh-release@v1
         with:
+          append_body: true
           body: |
-            ${{ steps.extract-release-notes.outputs.release_notes }}
+            | more-events-windows-x64.zip | ${{ steps.calculate-sha256.outputs.sha256 }} |
           files: |
-            more-events-package-windows-x64.zip
-            more-events-plugin-windows-x64.zip
+            more-events-windows-x64.zip
