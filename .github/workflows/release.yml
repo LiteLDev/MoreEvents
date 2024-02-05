@@ -53,7 +53,7 @@ jobs:
           python scripts/validate_release.py --tag ${{ github.event.release.tag_name }}
 
       - id: extract-release-notes
-        uses: ffurrer2/extract-release-notes@v1
+        uses: ffurrer2/extract-release-notes@v2
 
       - uses: softprops/action-gh-release@v1
         with:
@@ -73,7 +73,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: more-events-windows-x64-${{ github.sha }}
           path: artifact
