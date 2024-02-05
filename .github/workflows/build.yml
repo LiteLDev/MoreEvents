@@ -17,12 +17,21 @@ jobs:
       - run: |
           xmake f -a x64 -m release -p windows -v -y
 
+          - run: |
+          xmake -v -w -y
+
       - run: |
-          xmake -w -y
+          xmake package -v -y
 
       - uses: actions/upload-artifact@v3
         with:
-          name: more-events-windows-x64-${{ github.sha }}
+          name: more-events-package-windows-x64-${{ github.sha }}
+          path: |
+            build/packages/m/more-events/windows/x64/release/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: more-events-plugin-windows-x64-${{ github.sha }}
           path: |
             bin/
 

@@ -18,11 +18,20 @@ jobs:
           xmake f -a x64 -m release -p windows -v -y
 
       - run: |
-          xmake -w -y
+          xmake -v -w -y
+
+      - run: |
+          xmake package -v -y
 
       - uses: actions/upload-artifact@v3
         with:
-          name: more-events-windows-x64-${{ github.sha }}
+          name: more-events-package-windows-x64-${{ github.sha }}
+          path: |
+            build/packages/m/more-events/windows/x64/release/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: more-events-plugin-windows-x64-${{ github.sha }}
           path: |
             bin/
 
@@ -37,22 +46,24 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: more-events-windows-x64-${{ github.sha }}
-          path: release/bin/
+          name: more-events-package-windows-x64-${{ github.sha }}
+          path: release/package/
 
-      - name: Make include directory
-        run: |
-          python scripts/make_include.py
-          cp -r include release/
+      - uses: actions/download-artifact@v3
+        with:
+          name: more-events-plugin-windows-x64-${{ github.sha }}
+          path: release/plugin/
 
       - run: |
-          cp COPYING COPYING.LESSER README.md release/
+          cp COPYING COPYING.LESSER README.md release/plugin/
 
-      - name: Archive release
-        run: |
-          cd release
-          zip -r ../more-events-windows-x64.zip *
-          cd ..
+      - run: |
+          zip -r ../../more-events-package-windows-x64.zip *
+        working-directory: release/package/
+
+      - run: |
+          zip -r ../../more-events-plugin-windows-x64.zip *
+        working-directory: release/plugin/
 
       - id: extract-release-notes
         uses: ffurrer2/extract-release-notes@v2
@@ -62,4 +73,5 @@ jobs:
           body: |
             ${{ steps.extract-release-notes.outputs.release_notes }}
           files: |
-            more-events-windows-x64.zip
+            more-events-package-windows-x64.zip
+            more-events-plugin-windows-x64.zip
