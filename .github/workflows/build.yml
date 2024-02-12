@@ -28,19 +28,13 @@ jobs:
       - run: |
           xmake -v -w -y
 
-      - run: |
-          xmake package -v -y
-
-      - run: |
-          Copy-Item bin/* build/packages/m/more-events/windows/x64/release/ -Recurse
-
       - uses: actions/upload-artifact@v4
         with:
           name: more-events-windows-x64-${{ github.sha }}
           path: |
-            build/packages/m/more-events/windows/x64/release/
+            bin/
 
-  check-style:
+  clang-format:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

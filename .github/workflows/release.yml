@@ -28,17 +28,11 @@ jobs:
       - run: |
           xmake -v -w -y
 
-      - run: |
-          xmake package -v -y
-
-      - run: |
-          Copy-Item bin/* build/packages/m/more-events/windows/x64/release/ -Recurse
-
       - uses: actions/upload-artifact@v4
         with:
           name: more-events-windows-x64-${{ github.sha }}
           path: |
-            build/packages/m/more-events/windows/x64/release/
+            bin/
 
   update-release-notes:
     permissions:
@@ -47,11 +41,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate release stuff (tooth.json, CHANGELOG.md, etc.)
-        run: |
-          npm i -g keep-a-changelog
-          python scripts/validate_release.py --tag ${{ github.event.release.tag_name }}
-
       - id: extract-release-notes
         uses: ffurrer2/extract-release-notes@v2
 
@@ -59,9 +48,6 @@ jobs:
         with:
           body: |
             ${{ steps.extract-release-notes.outputs.release_notes }}
-
-            | File | SHA256 |
-            | ---- | ------ |
 
   upload-to-release:
     needs:
@@ -85,14 +71,7 @@ jobs:
           zip -r ../more-events-windows-x64.zip *
         working-directory: artifact
 
-      - id: calculate-sha256
-        run: |
-          echo sha256=$(sha256sum more-events-windows-x64.zip | awk '{print $1}') >> $GITHUB_OUTPUT
-
       - uses: softprops/action-gh-release@v1
         with:
-          append_body: true
-          body: |
-            | more-events-windows-x64.zip | ${{ steps.calculate-sha256.outputs.sha256 }} |
           files: |
             more-events-windows-x64.zip
