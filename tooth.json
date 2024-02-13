@@ -14,7 +14,7 @@
     },
     "asset_url": "https://github.com/LiteLDev/MoreEvents/releases/download/v0.1.0/more-events-windows-x64.zip",
     "prerequisites": {
-        "github.com/LiteLDev/LeviLamina": "0.7.x"
+        "github.com/LiteLDev/LeviLamina": "0.8.x"
     },
     "files": {
         "place": [
